@@ -2998,7 +2998,13 @@ void save_strain_video(const std::string &filename,
             break;
         case STRAIN::EXX : 
             get_strain = &Strain2D::get_exx;
-            break;       
+            break;
+        case STRAIN::E1:
+			get_strain = &Strain2D::get_e1;
+			break;
+		case STRAIN::E2:
+			get_strain = &Strain2D::get_e2;
+			break;     
     }   
         
     // Set min and max if they are NaN. They are set so that all data fits 

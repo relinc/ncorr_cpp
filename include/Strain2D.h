@@ -12,6 +12,7 @@
 #include "Image2D.h"
 #include "ROI2D.h"
 #include "Data2D.h"
+#include <math.h>
 
 namespace ncorr {
 
@@ -38,7 +39,9 @@ public:
     
     // Additional constructors -----------------------------------------------//
     Strain2D(Array2D<double> eyy, Array2D<double> exy, Array2D<double> exx, const ROI2D &roi, difference_type scalefactor) : // r-value
-         eyy(std::move(eyy), roi, scalefactor), exy(std::move(exy), roi, scalefactor), exx(std::move(exx), roi, scalefactor) { }
+         eyy(std::move(eyy), roi, scalefactor), exy(std::move(exy), roi, scalefactor), exx(std::move(exx), roi, scalefactor) {
+             create_e1_e2();
+          }
         
     // Static factory methods ------------------------------------------------//
     static Strain2D load(std::ifstream&);
@@ -56,6 +59,8 @@ public:
     const Data2D& get_eyy() const { return eyy; } 
     const Data2D& get_exy() const { return exy; } 
     const Data2D& get_exx() const { return exx; } 
+    const Data2D& get_e1() const { return e1; }
+	const Data2D& get_e2() const { return e2; }
     const ROI2D& get_roi() const { return eyy.get_roi(); }   
     difference_type get_scalefactor() const { return eyy.get_scalefactor(); }
     
@@ -70,6 +75,42 @@ private:
     Data2D eyy;   // Immutable - Data2D has pointer semantics
     Data2D exy;   // Immutable - Data2D has pointer semantics
     Data2D exx;   // Immutable - Data2D has pointer semantics
+    Data2D e1;     //Calculations added by Brent Halonen of Analysis by Brent
+    Data2D e2;
+    void create_e1_e2() {
+
+			Array2D<double> e1_array = *new Array2D<double>(eyy.get_array());
+			Array2D<double> e2_array = *new Array2D<double>(eyy.get_array());
+
+			auto i_eyy = eyy.get_array().begin();
+			auto i_exx = exx.get_array().begin();
+			auto i_exy = exy.get_array().begin();
+			auto i_e1 = e1_array.begin();
+			auto i_e2 = e2_array.begin();
+
+			while (i_eyy != eyy.get_array().end()) {
+
+				double d_eyy = *i_eyy;
+				double d_exy = *i_exy;
+				double d_exx = *i_exx;
+				double det = d_eyy*d_exx - d_exy*d_exy;
+				double tr = d_exx + d_eyy;
+				double eigenfirst = tr / 2 + std::sqrt(std::pow(d_eyy-d_exx, 2.0) / 4 + std::pow(d_exy, 2.0));
+				double eigensecond = tr / 2 - std::sqrt(std::pow(tr, 2.0) / 4 + std::pow(d_exy, 2.0));
+				*i_e1 = std::max(eigenfirst, eigensecond);
+				*i_e2 = std::min(eigenfirst, eigensecond);
+				++i_eyy;
+				++i_exx;
+				++i_exy;
+				++i_e1;
+				++i_e2;
+
+			}
+
+			e1 = *new Data2D(e1_array, eyy.get_roi(), eyy.get_scalefactor());
+			e2 = *new Data2D(e2_array, eyy.get_roi(), eyy.get_scalefactor());
+
+		}
 };
   
 namespace details {    
