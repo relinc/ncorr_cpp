@@ -1,0 +1,99 @@
+Version 1.0	SURE-DIC
+€Sample Name:	Trial Sample
+
+€Images:
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 010.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 011.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 012.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 013.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 014.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 015.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 016.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 017.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 018.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 019.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 020.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 021.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 022.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 023.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 024.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 025.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 026.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 027.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 028.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 029.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 030.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 031.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 032.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 033.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 034.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 035.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 036.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 037.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 038.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 039.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 040.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 041.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 042.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 043.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 044.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 045.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 046.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 047.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 048.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 049.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 050.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 051.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 052.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 053.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 054.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 055.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 056.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 057.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 058.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 059.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 060.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 061.jpg
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\Apple-DemoS2-Aluminum-5e5 062.jpg
+
+€ROI:
+C:\Users\brent\AppData\Roaming\RELFX\DataProc\Result\roi.png
+
+€DIC Settings:
+Scale factor:	3
+Interpolation:	Cubic Keys Precompute
+threads:	8
+Subregion:	Circle
+Radius sub:	20
+DIC config:	NO_UPDATE
+
+€Output Settings:
+Strain mode:	Eulerian
+CSV out:	mean e1,mean e2,mean exx,mean eyy,mean exy
+Video/Img out:	e1
+units:	inch
+units per px:	.01
+fps:	15
+OpenCv color:	COLORMAP_JET
+end delay:	2
+fourcc:	M,J,P,G
+colorbar:	true
+axes:	false
+scalebar:	false
+num units:	-1
+font size:	1
+tick marks:	11
+strain min:	0
+strain max:	-1
+disp min:	0
+disp max:	2
+strain radius:	20
+Subregion:	Circle
+Output:	image
+Output Dir:	C:/Users/brent/AppData/Roaming/RELFX/DataProc/Result/
+
+€Results:
+DIC input:	none
+DIC output:	none
+strain input:	none
+strain output:	none
