@@ -23,5 +23,6 @@ Subregion is defaulted to circle. In the future, rectangular subregions may be o
 
 Radius sub is the radius of the subregion being tracked. This must correspond to have a few identifiable markers in the radius.
 
+DIC Config has three options. NO_UPDATE never removes points from being tracked. If the object under analysis remains cohesive the entire time, this option makes sense. 
 
-
+Default output is chosen to be e1 or the first principle strain. This lowers the need for perfect alignment of sample in camera.

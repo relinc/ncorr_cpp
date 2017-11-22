@@ -316,11 +316,9 @@ void saveImages(string videoExport, strain_analysis_input &strain_input, vector<
 						prctile(e1_strains.get_array(), 0.99));
 			}
 			for (int i = 1; i < strain_input.DIC_input.imgs.size(); i++) {
-				std::cout<<"here"<<getImagesArray[i + 1]<<std::endl;
 				string imageName = getFileNameFromPath(getImagesArray[i + 1]);
 				string saveImagePath = videoPath + imageName + "_e1_"+ strainType + ".jpg";
 				Data2D e1_strains = strain_output.strains[i - 1].get_e1();
-				std::cout<<"here1"<<std::endl;
 				double maxE1;
 				if (strainMax < 0) {
 					maxE1 = maxCalcStrain;
@@ -328,7 +326,6 @@ void saveImages(string videoExport, strain_analysis_input &strain_input, vector<
 				else {
 					maxE1 = strainMax;
 				}
-				std::cout<<"here2"<<std::endl;
 				save_ncorr_data_over_img(saveImagePath,
 					strain_input.DIC_input.imgs[i - 1], e1_strains,
 					0.5, 0, maxE1, true, false, false,
@@ -428,8 +425,7 @@ void parseDICInput(DIC_analysis_input& DIC_input,json inputFile,vector<string>& 
 	for (json::iterator it = inputFile.find("images")->begin(); it != inputFile.find("images")->end(); ++it) {
   		image_names.push_back(it->get<string>());
 	}
-	//string directoryInUse = getDirPath(getImagesArray[1]);
-	//return 0;
+
 	for (int i = 1; i < image_names.size(); i++) {
 
 		imgs.push_back(image_names[i]);
@@ -455,262 +451,261 @@ int main(int argc, char *argv[]) {
 			"Must have 2 command line input of either 'calculate' or 'load' and the path of the job file");
 	}
 	try{
-	// Initialize DIC and strain information ---------------//
-	DIC_analysis_input DIC_input;
-	string nameOfFile;
-	
-	std::ifstream i(argv[2]);
-	json inputFile;
-	i >> inputFile;
-	i.close();
-	std::vector<std::string> image_names;
-	parseDICInput(DIC_input,inputFile,image_names);
-	
-
-	nameOfFile=inputFile.find("sample_name")->get<string>();
-
-	DIC_analysis_output DIC_output;
-
-	strain_analysis_input strain_input;
-	strain_analysis_output strain_output;
-	
-
-	string loadDIC_inputPath=inputFile.find("results")->find("dic_input")->get<string>();
-	string loadDIC_outputPath=inputFile.find("results")->find("dic_output")->get<string>();
-	string loadStrain_inputPath=inputFile.find("results")->find("strain_input")->get<string>();
-	string loadStrain_outputPath=inputFile.find("results")->find("strain_output")->get<string>();
-	//Get Load Results
-	bool eulerian_out=inputFile.find("output_settings")->find("output_strain_mode")->get<string>().compare("Eulerian")==0;
-	bool eulerian_video=inputFile.find("output_settings")->find("video_strain_mode")->get<string>().compare("Eulerian")==0;
-	vector<string> csvExport;
-	json csvExportJson=*inputFile.find("output_settings")->find("csv_out");
-	for (json::iterator it = csvExportJson.begin(); it != csvExportJson.end(); ++it) {
-  		csvExport.push_back(it->get<string>());
-	}
-	string videoExport=inputFile.find("output_settings")->find("video_img_out")->get<string>();
-	string units=inputFile.find("output_settings")->find("units")->get<string>();
-	double units_per_px=inputFile.find("output_settings")->find("units_per_px")->get<double>();
-	int fps = inputFile.find("output_settings")->find("fps")->get<int>();
-	string openCV_color =inputFile.find("output_settings")->find("opencv_color")->get<string>();
-	double end_delay=inputFile.find("output_settings")->find("end_delay")->get<double>();
-	json fourccInputJson = *inputFile.find("output_settings")->find("fourcc");
-	vector<string> fourccInput;
-	
-	for (json::iterator it = fourccInputJson.begin(); it != fourccInputJson.end(); ++it) {
-  		csvExport.push_back(it->get<string>());
-	} 
-	
-	bool colorbar=inputFile.find("output_settings")->find("colorbar")->get<bool>();
-	bool axes = inputFile.find("output_settings")->find("axes")->get<bool>();
-	bool scalebar = inputFile.find("output_settings")->find("scalebar")->get<bool>();
-	int numUnits = inputFile.find("output_settings")->find("num_units")->get<int>();
-	int fontSize = inputFile.find("output_settings")->find("font_size")->get<int>();
-	int tickMarks = inputFile.find("output_settings")->find("tick_marks")->get<int>();
-	double strainMin = inputFile.find("output_settings")->find("strain_min")->get<double>();
-	double strainMax = inputFile.find("output_settings")->find("strain_max")->get<double>();
-	double dispMin = inputFile.find("output_settings")->find("disp_min")->get<double>();
-	double dispMax = inputFile.find("output_settings")->find("disp_max")->get<double>();
-	int strainRadius = inputFile.find("output_settings")->find("strain_radius")->get<int>();
-	SUBREGION subRegionStrain;
-	string outputType = inputFile.find("output_settings")->find("output")->get<string>();
-	string outputFilesDirectory = inputFile.find("output_settings")->find("output_dir")->get<string>();
-	//return 0;
-	string subRegionstrStrain = inputFile.find("output_settings")->find("subregion")->get<string>();
-	if (subRegionstrStrain.compare("Circle") == 0) {
-		subRegionStrain = SUBREGION::CIRCLE;
-	}
-	if (subRegionstrStrain.compare("Square") == 0) {
-		subRegionStrain = SUBREGION::SQUARE;
-	}
-
-	strain_analysis_input strain_input_lagrange;
-	strain_analysis_output strain_output_lagrange;
-	strain_analysis_input strain_input_eulerian;
-	strain_analysis_output strain_output_eulerian;
-	DIC_analysis_output DIC_output_eulerian;
-	DIC_analysis_input DIC_input_eulerian;
-
-	// Determine whether or not to perform calculations or 
-	// load data (only load data if analysis has already 
-	// been done and saved or else throw an exception).
-	std::string input(argv[1]);
-	if (input == "load") {
-		processImagesFromBinary(DIC_input, 
-								DIC_output, 
-								strain_input, 
-								strain_output, 
-								loadDIC_inputPath, 
-								loadDIC_outputPath, 
-								strainRadius, 
-								subRegionStrain,  
-								DIC_input.interp_type,  
-								units,  
-								units_per_px);
-	}
-	else if (input == "calculate") {
-
-		// Set DIC_input
-		std::chrono::time_point<std::chrono::system_clock> start_setUp = std::chrono::system_clock::now();
-
-		std::chrono::time_point<std::chrono::system_clock> end_setUp = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsed_seconds_setUp = end_setUp - start_setUp;
-		std::cout << "Time to setup: " << elapsed_seconds_setUp.count() << "." << std::endl;
-		// Perform DIC_analysis    
-		DIC_output = DIC_analysis(DIC_input);
-		//std::cout << "This happened now." << std::endl;
-		// Save outputs as binary
-		string savePath = outputFilesDirectory + "save/";
-		remove(savePath.c_str());
-		_mkdir(savePath.c_str());
-
-		string saveDIC_inputPath = savePath + "DIC_input.bin";
-		string saveDIC_outputPath = savePath + "DIC_output.bin";
-
-		save(DIC_input, saveDIC_inputPath);
-		save(DIC_output, saveDIC_outputPath);
-
-		DIC_analysis_output DIC_output_original = DIC_output;
-		//DIC_output = set_units(DIC_output, units, units_per_px);
-		// Set strain input
-		strain_input_lagrange = strain_analysis_input(DIC_input, DIC_output_original,
-			subRegionStrain,					// Strain subregion shape
-			strainRadius);						// Strain subregion radius
-
-												// Perform strain_analysis
-		strain_output_lagrange = strain_analysis(strain_input_lagrange);
-
-		//export strain data here, and here only.
-
-		exportStrainData(outputFilesDirectory, csvExport, strain_output_lagrange);
-
-		strain_output = strain_output_lagrange;
-		DIC_output=DIC_output_original;
-		strain_input = strain_input_lagrange;
+		// Initialize DIC and strain information ---------------//
+		DIC_analysis_input DIC_input;
+		string nameOfFile;
 		
-		DIC_output = set_units(DIC_output, units, units_per_px);
-		//export images
+		std::ifstream i(argv[2]);
+		json inputFile;
+		i >> inputFile;
+		i.close();
+		std::vector<std::string> image_names;
+		parseDICInput(DIC_input,inputFile,image_names);
+		
 
-		if (!eulerian_out&&eulerian_video) {
-			processImagesFromBinary(DIC_input_eulerian, 
-									DIC_output_eulerian, 
-									strain_input_eulerian, 
-									strain_output_eulerian, 
-									saveDIC_inputPath, 
-									saveDIC_outputPath, 
+		nameOfFile=inputFile.find("sample_name")->get<string>();
+
+		DIC_analysis_output DIC_output;
+
+		strain_analysis_input strain_input;
+		strain_analysis_output strain_output;
+		
+
+		string loadDIC_inputPath=inputFile.find("results")->find("dic_input")->get<string>();
+		string loadDIC_outputPath=inputFile.find("results")->find("dic_output")->get<string>();
+		string loadStrain_inputPath=inputFile.find("results")->find("strain_input")->get<string>();
+		string loadStrain_outputPath=inputFile.find("results")->find("strain_output")->get<string>();
+		//Get Load Results
+		bool eulerian_out=inputFile.find("output_settings")->find("output_strain_mode")->get<string>().compare("Eulerian")==0;
+		bool eulerian_video=inputFile.find("output_settings")->find("video_strain_mode")->get<string>().compare("Eulerian")==0;
+		vector<string> csvExport;
+		json csvExportJson=*inputFile.find("output_settings")->find("csv_out");
+		for (json::iterator it = csvExportJson.begin(); it != csvExportJson.end(); ++it) {
+			csvExport.push_back(it->get<string>());
+		}
+		string videoExport=inputFile.find("output_settings")->find("video_img_out")->get<string>();
+		string units=inputFile.find("output_settings")->find("units")->get<string>();
+		double units_per_px=inputFile.find("output_settings")->find("units_per_px")->get<double>();
+		int fps = inputFile.find("output_settings")->find("fps")->get<int>();
+		string openCV_color =inputFile.find("output_settings")->find("opencv_color")->get<string>();
+		double end_delay=inputFile.find("output_settings")->find("end_delay")->get<double>();
+		json fourccInputJson = *inputFile.find("output_settings")->find("fourcc");
+		vector<string> fourccInput;
+		
+		for (json::iterator it = fourccInputJson.begin(); it != fourccInputJson.end(); ++it) {
+			csvExport.push_back(it->get<string>());
+		} 
+		
+		bool colorbar=inputFile.find("output_settings")->find("colorbar")->get<bool>();
+		bool axes = inputFile.find("output_settings")->find("axes")->get<bool>();
+		bool scalebar = inputFile.find("output_settings")->find("scalebar")->get<bool>();
+		int numUnits = inputFile.find("output_settings")->find("num_units")->get<int>();
+		int fontSize = inputFile.find("output_settings")->find("font_size")->get<int>();
+		int tickMarks = inputFile.find("output_settings")->find("tick_marks")->get<int>();
+		double strainMin = inputFile.find("output_settings")->find("strain_min")->get<double>();
+		double strainMax = inputFile.find("output_settings")->find("strain_max")->get<double>();
+		double dispMin = inputFile.find("output_settings")->find("disp_min")->get<double>();
+		double dispMax = inputFile.find("output_settings")->find("disp_max")->get<double>();
+		int strainRadius = inputFile.find("output_settings")->find("strain_radius")->get<int>();
+		SUBREGION subRegionStrain;
+		string outputType = inputFile.find("output_settings")->find("output")->get<string>();
+		string outputFilesDirectory = inputFile.find("output_settings")->find("output_dir")->get<string>();
+		string subRegionstrStrain = inputFile.find("output_settings")->find("subregion")->get<string>();
+		if (subRegionstrStrain.compare("Circle") == 0) {
+			subRegionStrain = SUBREGION::CIRCLE;
+		}
+		if (subRegionstrStrain.compare("Square") == 0) {
+			subRegionStrain = SUBREGION::SQUARE;
+		}
+
+		strain_analysis_input strain_input_lagrange;
+		strain_analysis_output strain_output_lagrange;
+		strain_analysis_input strain_input_eulerian;
+		strain_analysis_output strain_output_eulerian;
+		DIC_analysis_output DIC_output_eulerian;
+		DIC_analysis_input DIC_input_eulerian;
+
+		// Determine whether or not to perform calculations or 
+		// load data (only load data if analysis has already 
+		// been done and saved or else throw an exception).
+		std::string input(argv[1]);
+		if (input == "load") {
+			processImagesFromBinary(DIC_input, 
+									DIC_output, 
+									strain_input, 
+									strain_output, 
+									loadDIC_inputPath, 
+									loadDIC_outputPath, 
 									strainRadius, 
-									subRegionStrain, 
-									DIC_input.interp_type, 
-									units, 
+									subRegionStrain,  
+									DIC_input.interp_type,  
+									units,  
 									units_per_px);
 		}
-	}
-	else {
-		throw std::invalid_argument(
-			"Input of " + input
-			+ " is not recognized. Must be either 'calculate' or 'load'");
-	}
+		else if (input == "calculate") {
 
-	// Create Videos ---------------------------------------//
-	// Note that more inputs can be used to modify plots. 
-	// If video is not saving correctly, try changing the 
-	// input codec using cv::VideoWriter::fourcc(...)). Check 
-	// the opencv documentation on video codecs. By default, 
-	// ncorr uses cv::VideoWriter::fourcc('M','J','P','G')).
-	// Save outputs as binary
-	std::cout << "Before Video Start" << std::endl;
-	string videoPath = outputFilesDirectory + "video/";
-	remove(videoPath.c_str());
-	_mkdir(videoPath.c_str());
-	
-	string strainType = "Lagrangian";
-	if (eulerian_video) {
-		strainType = "Eulerian";
-	}
-	
-	string saveDICVideo_V_inputPath = videoPath + nameOfFile + "_V_"
-		+ strainType + ".avi";
-	
-	string saveDICVideo_U_outputPath = videoPath + nameOfFile + "_U_"
-		+ strainType + ".avi";
-	string saveStrainVideo_eyy_inputPath = videoPath + nameOfFile + "_eyy_"
-		+ strainType + ".avi";
-	string saveStrainVideo_exx_outputPath = videoPath + nameOfFile + "_exx_"
-		+ strainType + ".avi";
-	
-	string saveStrainVideo_exy_outputPath = videoPath + nameOfFile + "_exy_"
-		+ strainType + ".avi";
-	string saveStrainVideo_e1_outputPath = videoPath + nameOfFile + "_e1_"
-		+ strainType + ".avi";
-	string saveStrainVideo_e2_outputPath = videoPath + nameOfFile + "_e2_"
-		+ strainType + ".avi";
-	std::cout << "Made it here 1" << std::endl;
-	if (outputType.compare("Video") == 0) {
-		vector<string> exports = split(videoExport, ",", false);
-		
-		for (int idx = 0; idx < exports.size(); idx++) {
-			if (exports[idx].compare("v") == 0) {
-				save_DIC_video(saveDICVideo_V_inputPath, DIC_input, DIC_output,
-					DISP::V, 0.5,		// Alpha
-					15);		// FPS
-			}
-			if (exports[idx].compare("u") == 0) {
-				save_DIC_video(saveDICVideo_U_outputPath, DIC_input, DIC_output,
-					DISP::U, 0.5,		// Alpha
-					15);		// FPS
-			}
-			if (exports[idx].compare("eyy") == 0) {
-				save_strain_video(saveStrainVideo_eyy_inputPath, strain_input,
-					strain_output, STRAIN::EYY, 0.5,		// Alpha
-					15);		// FPS
-			}
-			if (exports[idx].compare("exy") == 0) {
-				save_strain_video(saveStrainVideo_exy_outputPath, strain_input,
-					strain_output, STRAIN::EXY, 0.5,		// Alpha
-					15,strainMin,strainMax);		// FPS
-			}
-			if (exports[idx].compare("exx") == 0) {
-				save_strain_video(saveStrainVideo_exx_outputPath, strain_input,
-					strain_output, STRAIN::EXX, 0.5,		// Alpha
-					15); 		// FPS
-			}
-			if (exports[idx].compare("e1") == 0) {
-				save_strain_video(saveStrainVideo_e1_outputPath, strain_input,
-					strain_output, STRAIN::E1, 0.5,		// Alpha
-					15); 		// FPS
-			}
-			if (exports[idx].compare("e2") == 0) {
-				save_strain_video(saveStrainVideo_e2_outputPath, strain_input,
-					strain_output, STRAIN::E1, 0.5,		// Alpha
-					15); 		// FPS
+			// Set DIC_input
+			std::chrono::time_point<std::chrono::system_clock> start_setUp = std::chrono::system_clock::now();
+
+			std::chrono::time_point<std::chrono::system_clock> end_setUp = std::chrono::system_clock::now();
+			std::chrono::duration<double> elapsed_seconds_setUp = end_setUp - start_setUp;
+			std::cout << "Time to setup: " << elapsed_seconds_setUp.count() << "." << std::endl;
+			// Perform DIC_analysis    
+			DIC_output = DIC_analysis(DIC_input);
+			// Save outputs as binary
+			string savePath = outputFilesDirectory + "save/";
+			remove(savePath.c_str());
+			_mkdir(savePath.c_str());
+
+			string saveDIC_inputPath = savePath + "DIC_input.bin";
+			string saveDIC_outputPath = savePath + "DIC_output.bin";
+
+			save(DIC_input, saveDIC_inputPath);
+			save(DIC_output, saveDIC_outputPath);
+
+			DIC_analysis_output DIC_output_original = DIC_output;
+			//DIC_output = set_units(DIC_output, units, units_per_px);
+			// Set strain input
+			strain_input_lagrange = strain_analysis_input(DIC_input, DIC_output_original,
+				subRegionStrain,					// Strain subregion shape
+				strainRadius);						// Strain subregion radius
+
+													// Perform strain_analysis
+			strain_output_lagrange = strain_analysis(strain_input_lagrange);
+
+			//export strain data here, and here only.
+
+			exportStrainData(outputFilesDirectory, csvExport, strain_output_lagrange);
+
+			strain_output = strain_output_lagrange;
+			DIC_output=DIC_output_original;
+			strain_input = strain_input_lagrange;
+			
+			DIC_output = set_units(DIC_output, units, units_per_px);
+			//export images
+
+			if (!eulerian_out&&eulerian_video) {
+				processImagesFromBinary(DIC_input_eulerian, 
+										DIC_output_eulerian, 
+										strain_input_eulerian, 
+										strain_output_eulerian, 
+										saveDIC_inputPath, 
+										saveDIC_outputPath, 
+										strainRadius, 
+										subRegionStrain, 
+										DIC_input.interp_type, 
+										units, 
+										units_per_px);
 			}
 		}
-	}
+		else {
+			throw std::invalid_argument(
+				"Input of " + input
+				+ " is not recognized. Must be either 'calculate' or 'load'");
+		}
 
-	else {
-		if(eulerian_video)
-			saveImages(videoExport, 
-						strain_input_eulerian, 
-						image_names, 
-						videoPath, 
-						strainType, 
-						DIC_output_eulerian, 
-						strain_output_eulerian, 
-						strainMax);
-		else
-			saveImages(videoExport, 
-						strain_input, 
-						image_names, 
-						videoPath, 
-						strainType, 
-						DIC_output, 
-						strain_output, 
-						strainMax);
+		// Create Videos ---------------------------------------//
+		// Note that more inputs can be used to modify plots. 
+		// If video is not saving correctly, try changing the 
+		// input codec using cv::VideoWriter::fourcc(...)). Check 
+		// the opencv documentation on video codecs. By default, 
+		// ncorr uses cv::VideoWriter::fourcc('M','J','P','G')).
+		// Save outputs as binary
+		std::cout << "Before Video Start" << std::endl;
+		string videoPath = outputFilesDirectory + "video/";
+		remove(videoPath.c_str());
+		_mkdir(videoPath.c_str());
+		
+		string strainType = "Lagrangian";
+		if (eulerian_video) {
+			strainType = "Eulerian";
+		}
+		
+		string saveDICVideo_V_inputPath = videoPath + nameOfFile + "_V_"
+			+ strainType + ".avi";
+		
+		string saveDICVideo_U_outputPath = videoPath + nameOfFile + "_U_"
+			+ strainType + ".avi";
+		string saveStrainVideo_eyy_inputPath = videoPath + nameOfFile + "_eyy_"
+			+ strainType + ".avi";
+		string saveStrainVideo_exx_outputPath = videoPath + nameOfFile + "_exx_"
+			+ strainType + ".avi";
+		
+		string saveStrainVideo_exy_outputPath = videoPath + nameOfFile + "_exy_"
+			+ strainType + ".avi";
+		string saveStrainVideo_e1_outputPath = videoPath + nameOfFile + "_e1_"
+			+ strainType + ".avi";
+		string saveStrainVideo_e2_outputPath = videoPath + nameOfFile + "_e2_"
+			+ strainType + ".avi";
+		std::cout << "Made it here 1" << std::endl;
+		if (outputType.compare("Video") == 0) {
+			vector<string> exports = split(videoExport, ",", false);
+			
+			for (int idx = 0; idx < exports.size(); idx++) {
+				if (exports[idx].compare("v") == 0) {
+					save_DIC_video(saveDICVideo_V_inputPath, DIC_input, DIC_output,
+						DISP::V, 0.5,		// Alpha
+						15);		// FPS
+				}
+				if (exports[idx].compare("u") == 0) {
+					save_DIC_video(saveDICVideo_U_outputPath, DIC_input, DIC_output,
+						DISP::U, 0.5,		// Alpha
+						15);		// FPS
+				}
+				if (exports[idx].compare("eyy") == 0) {
+					save_strain_video(saveStrainVideo_eyy_inputPath, strain_input,
+						strain_output, STRAIN::EYY, 0.5,		// Alpha
+						15);		// FPS
+				}
+				if (exports[idx].compare("exy") == 0) {
+					save_strain_video(saveStrainVideo_exy_outputPath, strain_input,
+						strain_output, STRAIN::EXY, 0.5,		// Alpha
+						15,strainMin,strainMax);		// FPS
+				}
+				if (exports[idx].compare("exx") == 0) {
+					save_strain_video(saveStrainVideo_exx_outputPath, strain_input,
+						strain_output, STRAIN::EXX, 0.5,		// Alpha
+						15); 		// FPS
+				}
+				if (exports[idx].compare("e1") == 0) {
+					save_strain_video(saveStrainVideo_e1_outputPath, strain_input,
+						strain_output, STRAIN::E1, 0.5,		// Alpha
+						15); 		// FPS
+				}
+				if (exports[idx].compare("e2") == 0) {
+					save_strain_video(saveStrainVideo_e2_outputPath, strain_input,
+						strain_output, STRAIN::E1, 0.5,		// Alpha
+						15); 		// FPS
+				}
+			}
+		}
 
-	}
+		else {
+			if(eulerian_video)
+				saveImages(videoExport, 
+							strain_input_eulerian, 
+							image_names, 
+							videoPath, 
+							strainType, 
+							DIC_output_eulerian, 
+							strain_output_eulerian, 
+							strainMax);
+			else
+				saveImages(videoExport, 
+							strain_input, 
+							image_names, 
+							videoPath, 
+							strainType, 
+							DIC_output, 
+							strain_output, 
+							strainMax);
+
+		}
 	}
 	catch(const std::exception& e)
 	{
 		std::cout<<e.what()<<std::endl;
+		std::cout<<"Ncorr crashed"<<std::endl;
 	}
 	
 	std::cout<<"exiting ncorr"<<std::endl;
