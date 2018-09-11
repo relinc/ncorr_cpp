@@ -3,6 +3,7 @@
 #include "ncorr.h"
 #include <direct.h>
 #include "json.hpp"
+#include <fstream>
 
 using namespace ncorr;
 using namespace std;
@@ -53,101 +54,84 @@ double getMean(const Data2D & dataOfInterest) {
 	}
 	return sumValue / size;
 }
+void export_strains(string output_file,vector<Data2D> output_results){
+		remove(output_file.c_str());
 
-void exportStrainData(string outputFilesDirectory, vector<string> csvExport, strain_analysis_output strain_output) {
+		FILE* f = fopen(output_file.c_str(), "w");
+		if (f == NULL)
+		{
+			printf("Error opening file!\n");
+			exit(1);
+		}
+		else {
+			for (int idx = 0; idx < output_results.size();idx++) {
+				Data2D strain = output_results[idx];
+				double trueStrain = std::log(1 + getMean(strain));
+				fprintf(f, "%f\n", trueStrain);
+
+			}
+		}
+		fclose(f);
+}
+void copy_file(string from,string destination){
+ std::ifstream  src(from, std::ios::binary);
+    std::ofstream  dst(destination,   std::ios::binary);
+
+    dst << src.rdbuf();
+}
+void exportStrainData(string outputFilesDirectory, vector<string> csvExport, strain_analysis_output strain_output,string main_output_variable) {
 	// only reachable before Eulerian if.
 	string dataPath = outputFilesDirectory + "data/";
 	remove(dataPath.c_str());
 	_mkdir(dataPath.c_str());
-
+	string export_sp_dest = dataPath + "strain_output.txt";
 	for (int idx = 0; idx < csvExport.size(); idx++) {
 
 		if (csvExport[idx].compare("mean exx") == 0) {
 			string exxFileName = dataPath + "exx.txt";
-			remove(exxFileName.c_str());
-
-			FILE* f = fopen(exxFileName.c_str(), "w");
-			if (f == NULL)
-			{
-				printf("Error opening file!\n");
-				exit(1);
-			}
-			else {
-				for (int idx2 = 0; idx2 < strain_output.strains.size();
-				idx2++) {
-					Data2D exx_strains = strain_output.strains[idx2].get_exx();
-					double trueStrain = std::log(1 + getMean(exx_strains));
-					fprintf(f, "%f\n", trueStrain);
-
+			vector<Data2D> strain_data;
+			for (int idxStrain = 0; idxStrain < strain_output.strains.size(); idxStrain++) {
+					strain_data.push_back(strain_output.strains[idxStrain].get_exx());
 				}
+			export_strains(exxFileName,strain_data);
+			if(main_output_variable.compare("mean exx")==0){
+				copy_file(exxFileName,export_sp_dest);
 			}
-
 		}
 		if (csvExport[idx].compare("mean eyy") == 0) {
-			string exxFileName = dataPath + "eyy.txt";
-			remove(exxFileName.c_str());
-
-			FILE* f = fopen(exxFileName.c_str(), "w");
-			if (f == NULL)
-			{
-				printf("Error opening file!\n");
-				exit(1);
-			}
-			else {
-				for (int idx2 = 0; idx2 < strain_output.strains.size();
-				idx2++) {
-					Data2D eyy_strains = strain_output.strains[idx2].get_eyy();
-					double trueStrain = std::log(1 + getMean(eyy_strains));
-					fprintf(f, "%f\n", trueStrain);
-
+			string eyyFileName = dataPath + "eyy.txt";
+			vector<Data2D> strain_data;
+			for (int idxStrain = 0; idxStrain < strain_output.strains.size(); idxStrain++) {
+					strain_data.push_back(strain_output.strains[idxStrain].get_eyy());
 				}
+			export_strains(eyyFileName,strain_data);
+			if(main_output_variable.compare("mean eyy")==0){
+				copy_file(eyyFileName,export_sp_dest);
 			}
 
 		}
 		if (csvExport[idx].compare("mean exy") == 0) {
-			string exxFileName = dataPath + "exy.txt";
-			remove(exxFileName.c_str());
-
-
-			FILE* f = fopen(exxFileName.c_str(), "w");
-			if (f == NULL)
-			{
-				printf("Error opening file!\n");
-				exit(1);
-			}
-			else {
-				for (int idx2 = 0; idx2 < strain_output.strains.size();
-				idx2++) {
-
-					Data2D exy_strains = strain_output.strains[idx2].get_exy();
-					double trueStrain = std::log(1 + getMean(exy_strains));
-					fprintf(f, "%f\n", trueStrain);
-
+			string exyFileName = dataPath + "exy.txt";
+			vector<Data2D> strain_data;
+			for (int idxStrain = 0; idxStrain < strain_output.strains.size(); idxStrain++) {
+					strain_data.push_back(strain_output.strains[idxStrain].get_exy());
 				}
+			export_strains(exyFileName,strain_data);
+			if(main_output_variable.compare("mean exy")==0){
+				copy_file(exyFileName,export_sp_dest);
 			}
 
 		}
 		if (csvExport[idx].compare("mean e1") == 0) {
-			string exxFileName = dataPath + "e1.txt";
-			remove(exxFileName.c_str());
-
-			FILE* f = fopen(exxFileName.c_str(), "w");
-			if (f == NULL)
-			{
-				printf("Error opening file!\n");
-				exit(1);
-			}
-			else {
-				for (int idx2 = 0; idx2 < strain_output.strains.size();
-				idx2++) {
-
-					Data2D e1_strains = strain_output.strains[idx2].get_e1();
-					double trueStrain = std::log(1 + getMean(e1_strains));
-					fprintf(f, "%f\n", trueStrain);
-
+			string e1FileName = dataPath + "e1.txt";
+			vector<Data2D> strain_data;
+			for (int idxStrain = 0; idxStrain < strain_output.strains.size(); idxStrain++) {
+					strain_data.push_back(strain_output.strains[idxStrain].get_e1());
 				}
+			export_strains(e1FileName,strain_data);
+			if(main_output_variable.compare("mean e1")==0){
+				copy_file(e1FileName,export_sp_dest);
 			}
-
 		}
 	}
 }
@@ -480,6 +464,7 @@ int main(int argc, char *argv[]) {
 		bool eulerian_video=inputFile.find("output_settings")->find("video_strain_mode")->get<string>().compare("Eulerian")==0;
 		vector<string> csvExport;
 		json csvExportJson=*inputFile.find("output_settings")->find("csv_out");
+		string main_output_variable = inputFile.find("output_settings")->find("main_output")->get<string>();
 		for (json::iterator it = csvExportJson.begin(); it != csvExportJson.end(); ++it) {
 			csvExport.push_back(it->get<string>());
 		}
@@ -575,7 +560,7 @@ int main(int argc, char *argv[]) {
 
 			//export strain data here, and here only.
 
-			exportStrainData(outputFilesDirectory, csvExport, strain_output_lagrange);
+			exportStrainData(outputFilesDirectory, csvExport, strain_output_lagrange, main_output_variable);
 
 			strain_output = strain_output_lagrange;
 			DIC_output=DIC_output_original;
