@@ -1,0 +1,58 @@
+
+{
+    "version" : 2,
+    "sample-name": "Trial Sample",
+    "images":[
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 010.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 011.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 012.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 013.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 014.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 015.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 016.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 017.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 018.jpg",
+        "../example-photos/Apple-DemoS2-Aluminum-5e5 019.jpg"
+    ],
+    "roi":"../example-photos/roi.png",
+    "dic-settings":{
+        "scale-factor":3,
+        "interpolation":"Cubic Keys Precompute",
+        "threads":8,
+        "subregion":"circle",
+        "radius-sub": 20,
+        "dic-config":"NO_UPDATE"
+    },
+    "output-settings":{
+        "ouput-strain-mode":"Lagrangian",
+        "video-strain-mode":"Eulerian",
+        "csv-out":["mean e1","mean e2","mean exx","mean eyy","mean exy"],
+        "video-img-out":"e1",
+        "units":"inch",
+        "units-per-px":".01",
+        "fps":15,
+        "opencv-color":"COLORMAP_JET",
+        "end-delay":2,
+        "fourcc":["M","J","P","G"],
+        "colorbar":	true,
+        "axes":	false,
+        "scalebar":false,
+        "num-units":-1,
+        "font-size":1,
+        "tick-marks":11,
+        "strain-min":0,
+        "strain-max":-1,
+        "disp-min":	0,
+        "disp-max":	2.0,
+        "strain radius":20,
+        "subregion":"circle",
+        "output":"image",
+        "output-dir":	"../example-photos/Result/"
+    },
+    "results":{
+        "dic-input":"",
+        "dic-output":"",
+        "strain-input":"",
+        "strain-output":""
+    }
+}
